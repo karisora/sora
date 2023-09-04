@@ -4,8 +4,7 @@ import glob
 
 # color definition
 RED   = 1
-GREEN = 2
-BLUE  = 3
+
 
 def find_rect_of_target_color(image, color_type):
   hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV_FULL)
@@ -17,17 +16,6 @@ def find_rect_of_target_color(image, color_type):
     mask = np.zeros(h.shape, dtype=np.uint8)
     mask[((h < 20) | (h > 200)) & (s > 128)] = 255
 
-  # blue detection
-  if color_type == BLUE:
-    lower_blue = np.array([130, 50, 50])
-    upper_blue = np.array([200, 255, 255])
-    mask = cv2.inRange(hsv, lower_blue, upper_blue)
-
-  # green detection
-  if color_type == GREEN:
-    lower_green = np.array([75, 50, 50])
-    upper_green = np.array([110, 255, 255])
-    mask = cv2.inRange(hsv, lower_green, upper_green)
 
   # 近傍の定義
   neiborhood = np.array([[0, 1, 0],
@@ -74,24 +62,6 @@ if __name__ == "__main__":
           cv2.rectangle(frame, tuple(rect[0:2]), tuple(rect[0:2] + rect[2:4]), (0, 0, 255), thickness=2)
       #for rect in rects:
       #  cv2.rectangle(frame, tuple(rect[0:2]), tuple(rect[0:2] + rect[2:4]), (0, 0, 255), thickness=2)
-
-      # green
-      rects = find_rect_of_target_color(frame, GREEN)
-      if len(rects) > 0:
-        rect = max(rects, key=(lambda x: x[2] * x[3]))
-        if rect[3] > 10:
-         cv2.rectangle(frame, tuple(rect[0:2]), tuple(rect[0:2] + rect[2:4]), (0, 255, 0), thickness=2)
-      #for rect in rects:      
-      #  cv2.rectangle(frame, tuple(rect[0:2]), tuple(rect[0:2] + rect[2:4]), (0, 255, 0), thickness=2)
-
-      # blue
-      rects = find_rect_of_target_color(frame, BLUE)
-      if len(rects) > 0:
-        rect = max(rects, key=(lambda x: x[2] * x[3]))
-        if rect[3] > 10:
-          cv2.rectangle(frame, tuple(rect[0:2]), tuple(rect[0:2] + rect[2:4]), (255, 0, 0), thickness=2)
-      #for rect in rects:
-      #  cv2.rectangle(frame, tuple(rect[0:2]), tuple(rect[0:2] + rect[2:4]), (255, 0, 0), thickness=2)
 
       cv2.imshow('frame', frame)
       write_file_name = count_padded + ".png"
